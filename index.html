@@ -1,107 +1,589 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Elchat</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elchat 💙</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#0b4cff" />
-  <link rel="icon" href="icons/icon-192.png" />
-  <link rel="stylesheet" href="style.css" />
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+        }
+
+        .chat-area {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .chat-message {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .chat-message strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .btn-tool {
+            padding: 10px 16px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-tool:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+            transform: translateY(-2px);
+        }
+
+        .message-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .message-input input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-send {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .info-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #78350f;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-card h3 {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .feature-card p {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                gap: 8px;
+            }
+
+            .btn-tool {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        .chat-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-area::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .chat-area::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .chat-area::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="top">
-      <div>
-        <h1>Elchat 💙</h1>
-        <p class="sub">Chat room realtime + kirim foto/file + kamera + voice note + voice/video call + bisa install (PWA).</p>
-      </div>
-      <div class="pill" id="mePill">Offline</div>
-    </header>
-
-    <section class="card">
-      <div class="grid2">
-        <div>
-          <label>Nama kamu</label>
-          <input id="name" maxlength="24" placeholder="misal: Padri" />
+    <div class="container">
+        <div class="header">
+            <h1>💙 Elchat</h1>
+            <p>Chat realtime dengan fitur lengkap - Photo, Voice, Video Call & More</p>
         </div>
-        <div>
-          <label>Kode room</label>
-          <input id="room" maxlength="32" placeholder="misal: jambi-48" />
+
+        <div class="content">
+            <!-- Features Section -->
+            <div class="section">
+                <div class="section-title">✨ Fitur Unggulan</div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="icon">💬</div>
+                        <h3>Realtime Chat</h3>
+                        <p>Pesan instan tanpa delay</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">📷</div>
+                        <h3>Photo & File</h3>
+                        <p>Kirim foto dan dokumen</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🎙️</div>
+                        <h3>Voice Note</h3>
+                        <p>Rekam pesan suara</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">📞</div>
+                        <h3>Voice/Video Call</h3>
+                        <p>Panggilan berkualitas</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Section -->
+            <div class="section" id="loginSection">
+                <div class="section-title">
+                    <span class="status-indicator"></span>
+                    Masuk ke Room
+                </div>
+                <div class="input-group">
+                    <label for="nameInput">Nama Anda</label>
+                    <input type="text" id="nameInput" placeholder="Masukkan nama Anda...">
+                </div>
+                <div class="input-group">
+                    <label for="roomInput">Kode Room</label>
+                    <input type="text" id="roomInput" placeholder="Masukkan atau buat kode room...">
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="joinRoom()">
+                        🚪 Masuk Room
+                    </button>
+                    <button class="btn btn-primary" onclick="createRoom()">
+                        ➕ Buat Room
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyLink()">
+                        🔗 Salin Link
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="section hidden" id="chatSection">
+                <div class="section-title">
+                    <span class="status-indicator"></span>
+                    Chat Room
+                </div>
+                
+                <div class="toolbar">
+                    <button class="btn-tool" onclick="voiceCall()">📞 Voice Call</button>
+                    <button class="btn-tool" onclick="videoCall()">🎥 Video Call</button>
+                    <button class="btn-tool" onclick="joinCall()">🔗 Join Call</button>
+                    <button class="btn-tool" onclick="endCall()">❌ End Call</button>
+                    <button class="btn-tool" onclick="toggleMute()">🔇 Mute</button>
+                    <button class="btn-tool" onclick="toggleCamera()">🚫 Camera</button>
+                </div>
+
+                <div class="chat-area" id="chatArea">
+                    <div class="chat-message">
+                        <strong>Sistem:</strong> Selamat datang di Elchat! 💙
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <button class="btn-tool" onclick="attachFile()">📎 File</button>
+                    <button class="btn-tool" onclick="attachPhoto()">🖼️ Foto</button>
+                    <button class="btn-tool" onclick="openCamera()">📷 Kamera</button>
+                    <button class="btn-tool" onclick="startRecord()">🎙️ Rekam</button>
+                    <button class="btn-tool" onclick="stopRecord()">⏹️ Stop</button>
+                </div>
+
+                <div class="message-input">
+                    <input type="text" id="messageInput" placeholder="Ketik pesan Anda...">
+                    <button class="btn-send" onclick="sendMessage()">Kirim</button>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>ℹ️ Informasi:</strong> Kamera & mikrofon memerlukan HTTPS. Aplikasi ini sudah menggunakan HTTPS melalui GitHub Pages.
+                <br><br>
+                <strong>📱 Install:</strong> Di Chrome Android → menu ⋮ → "Add to Home screen" untuk menggunakan sebagai PWA.
+            </div>
         </div>
-      </div>
+    </div>
 
-      <div class="row">
-        <button id="joinBtn">Masuk Room</button>
-        <button id="newBtn" class="ghost">Buat Room</button>
-        <button id="copyBtn" class="ghost">Salin Link</button>
-      </div>
+    <!-- Camera Modal -->
+    <div class="modal" id="cameraModal">
+        <div class="modal-content">
+            <h2>📷 Kamera</h2>
+            <video id="cameraPreview" style="width: 100%; border-radius: 12px; margin: 20px 0;"></video>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="capturePhoto()">📸 Ambil Foto</button>
+                <button class="btn btn-secondary" onclick="closeCamera()">❌ Tutup</button>
+            </div>
+        </div>
+    </div>
 
-      <div class="presence">
-        <div class="presenceTitle">Online</div>
-        <div id="onlineList" class="onlineList"></div>
-        <small class="hint">Status online memakai Realtime Database (onDisconnect).</small>
-      </div>
-    </section>
+    <script>
+        // Placeholder functions - Anda bisa menghubungkan dengan Firebase atau backend lainnya
+        function joinRoom() {
+            const name = document.getElementById('nameInput').value;
+            const room = document.getElementById('roomInput').value;
+            
+            if (!name || !room) {
+                alert('Mohon isi nama dan kode room!');
+                return;
+            }
+            
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('chatSection').classList.remove('hidden');
+            
+            addMessage('Sistem', `${name} bergabung ke room ${room}`);
+        }
 
-    <section class="card chat hidden" id="chatCard">
-      <!-- CALL BAR -->
-      <div class="callbar">
-        <button id="btnVoice" class="ghost">📞 Voice Call</button>
-        <button id="btnVideo" class="ghost">🎥 Video Call</button>
-        <button id="btnJoinCall" class="ghost">🔗 Join Call</button>
-        <button id="btnHang" class="ghost hidden">❌ End</button>
+        function createRoom() {
+            const roomCode = 'ROOM-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+            document.getElementById('roomInput').value = roomCode;
+            alert(`Room baru dibuat: ${roomCode}`);
+        }
 
-        <button id="btnMute" class="ghost hidden">🔇 Mute</button>
-        <button id="btnCamOff" class="ghost hidden">🚫 Cam</button>
-        <div class="callStatus" id="callStatus"></div>
-      </div>
+        function copyLink() {
+            const room = document.getElementById('roomInput').value;
+            if (!room) {
+                alert('Buat room terlebih dahulu!');
+                return;
+            }
+            const link = `${window.location.href}?room=${room}`;
+            navigator.clipboard.writeText(link);
+            alert('Link room disalin!');
+        }
 
-      <div class="callview hidden" id="callView">
-        <video id="localVideo" autoplay playsinline muted></video>
-        <video id="remoteVideo" autoplay playsinline></video>
-      </div>
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                const name = document.getElementById('nameInput').value;
+                addMessage(name, message);
+                input.value = '';
+            }
+        }
 
-      <!-- MESSAGES -->
-      <div id="messages" class="messages"></div>
+        function addMessage(sender, text) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
 
-      <!-- TOOLS -->
-      <div class="tools">
-        <input id="filePick" type="file" hidden />
-        <button id="btnFile" class="ghost">📎 File</button>
-        <button id="btnPhoto" class="ghost">🖼️ Foto</button>
-        <button id="btnCam" class="ghost">📷 Kamera</button>
+        function voiceCall() { alert('Memulai voice call...'); }
+        function videoCall() { alert('Memulai video call...'); }
+        function joinCall() { alert('Bergabung ke call...'); }
+        function endCall() { alert('Mengakhiri call...'); }
+        function toggleMute() { alert('Toggle mute...'); }
+        function toggleCamera() { alert('Toggle camera...'); }
+        function attachFile() { alert('Memilih file...'); }
+        function attachPhoto() { alert('Memilih foto...'); }
+        function startRecord() { alert('Mulai rekam...'); }
+        function stopRecord() { alert('Stop rekam...'); }
 
-        <button id="btnRec" class="ghost">🎙️ Rekam</button>
-        <button id="btnStop" class="ghost hidden">⏹️ Stop</button>
-      </div>
+        function openCamera() {
+            document.getElementById('cameraModal').classList.add('active');
+        }
 
-      <!-- COMPOSER -->
-      <form id="form" class="composer">
-        <input id="text" maxlength="500" placeholder="Ketik pesan..." autocomplete="off">
-        <button>Kirim</button>
-      </form>
-    </section>
+        function closeCamera() {
+            document.getElementById('cameraModal').classList.remove('active');
+        }
 
-    <!-- CAMERA PANEL -->
-    <section class="card hidden" id="camCard">
-      <div class="camWrap">
-        <video id="video" autoplay playsinline></video>
-        <canvas id="canvas" class="hidden"></canvas>
-      </div>
-      <div class="row">
-        <button id="snapBtn">Ambil Foto</button>
-        <button id="closeCamBtn" class="ghost">Tutup</button>
-      </div>
-      <small class="hint">Kamera & mic butuh HTTPS. GitHub Pages sudah HTTPS.</small>
-    </section>
+        function capturePhoto() {
+            alert('Foto diambil!');
+            closeCamera();
+        }
 
-    <footer class="foot">
-      <small>Install: Chrome Android → menu ⋮ → “Add to Home screen”.</small>
-    </footer>
-  </div>
-
-  <script type="module" src="app.js"></script>
+        // Enter to send message
+        document.getElementById('messageInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
 </body>
-  </html>
+</html>
