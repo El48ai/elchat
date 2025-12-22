@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elchat</title>
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b4cff" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div>
+        <h1>Elchat 💙</h1>
+        <p class="sub">Chat room realtime + kirim foto/file + kamera + voice note + voice/video call + bisa install (PWA).</p>
+      </div>
+      <div class="pill" id="mePill">Offline</div>
+    </header>
+
+    <section class="card">
+      <div class="grid2">
+        <div>
+          <label>Nama kamu</label>
+          <input id="name" maxlength="24" placeholder="misal: Padri" />
+        </div>
+        <div>
+          <label>Kode room</label>
+          <input id="room" maxlength="32" placeholder="misal: jambi-48" />
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="joinBtn">Masuk Room</button>
+        <button id="newBtn" class="ghost">Buat Room</button>
+        <button id="copyBtn" class="ghost">Salin Link</button>
+      </div>
+
+      <div class="presence">
+        <div class="presenceTitle">Online</div>
+        <div id="onlineList" class="onlineList"></div>
+        <small class="hint">Status online memakai Realtime Database (onDisconnect).</small>
+      </div>
+    </section>
+
+    <section class="card chat hidden" id="chatCard">
+      <!-- CALL BAR -->
+      <div class="callbar">
+        <button id="btnVoice" class="ghost">📞 Voice Call</button>
+        <button id="btnVideo" class="ghost">🎥 Video Call</button>
+        <button id="btnJoinCall" class="ghost">🔗 Join Call</button>
+        <button id="btnHang" class="ghost hidden">❌ End</button>
+
+        <button id="btnMute" class="ghost hidden">🔇 Mute</button>
+        <button id="btnCamOff" class="ghost hidden">🚫 Cam</button>
+        <div class="callStatus" id="callStatus"></div>
+      </div>
+
+      <div class="callview hidden" id="callView">
+        <video id="localVideo" autoplay playsinline muted></video>
+        <video id="remoteVideo" autoplay playsinline></video>
+      </div>
+
+      <!-- MESSAGES -->
+      <div id="messages" class="messages"></div>
+
+      <!-- TOOLS -->
+      <div class="tools">
+        <input id="filePick" type="file" hidden />
+        <button id="btnFile" class="ghost">📎 File</button>
+        <button id="btnPhoto" class="ghost">🖼️ Foto</button>
+        <button id="btnCam" class="ghost">📷 Kamera</button>
+
+        <button id="btnRec" class="ghost">🎙️ Rekam</button>
+        <button id="btnStop" class="ghost hidden">⏹️ Stop</button>
+      </div>
+
+      <!-- COMPOSER -->
+      <form id="form" class="composer">
+        <input id="text" maxlength="500" placeholder="Ketik pesan..." autocomplete="off">
+        <button>Kirim</button>
+      </form>
+    </section>
+
+    <!-- CAMERA PANEL -->
+    <section class="card hidden" id="camCard">
+      <div class="camWrap">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" class="hidden"></canvas>
+      </div>
+      <div class="row">
+        <button id="snapBtn">Ambil Foto</button>
+        <button id="closeCamBtn" class="ghost">Tutup</button>
+      </div>
+      <small class="hint">Kamera & mic butuh HTTPS. GitHub Pages sudah HTTPS.</small>
+    </section>
+
+    <footer class="foot">
+      <small>Install: Chrome Android → menu ⋮ → “Add to Home screen”.</small>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+  </html>
