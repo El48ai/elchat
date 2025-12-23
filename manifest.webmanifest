@@ -1,13 +1,17 @@
 {
+  "id": "./",
   "name": "Elchat",
   "short_name": "Elchat",
+  "description": "Chat realtime bertema biru modern: pesan, foto, file, voice note, voice & video call.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#061023",
   "theme_color": "#0b4cff",
+  "categories": ["communication", "social"],
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
