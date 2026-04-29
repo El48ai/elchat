@@ -2,413 +2,2224 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Elchat 💙</title>
 
-  <!-- PWA -->
   <link rel="manifest" href="./manifest.webmanifest" />
-  <meta name="theme-color" content="#667eea" />
-  <link rel="icon" href="./icon-192.png" />
-  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="icon" href="./loading.png" />
+  <link rel="apple-touch-icon" href="./loading.png" />
 
-  <!-- External CSS file (kalau ada) -->
-  <link rel="stylesheet" href="./style.css" />
-
-  <!-- Fallback CSS (kalau style.css kosong / belum dipakai) -->
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#0f172a;
+      --bg2:#1e3a8a;
+      --card:rgba(255,255,255,.90);
+      --card2:rgba(248,250,252,.86);
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:rgba(148,163,184,.35);
+      --blue:#2563eb;
+      --purple:#7c3aed;
+      --green:#22c55e;
+      --red:#ef4444;
+      --fontSize:15px;
+    }
+
+    [data-theme="dark"]{
+      --card:rgba(15,23,42,.92);
+      --card2:rgba(30,41,59,.75);
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --line:rgba(226,232,240,.16);
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    html,body{
+      width:100%;
+      height:100%;
+      min-height:100%;
+    }
+
     body{
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
-      background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-      min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px
+      min-height:100vh;
+      min-height:100dvh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      font-size:var(--fontSize);
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left,rgba(37,99,235,.95),transparent 36%),
+        radial-gradient(circle at bottom right,rgba(124,58,237,.88),transparent 38%),
+        linear-gradient(135deg,var(--bg),var(--bg2));
+      overflow:hidden;
+      overscroll-behavior:none;
+      touch-action:manipulation;
     }
-    .container{
-      width:100%;max-width:900px;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);
-      border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;animation:fadeInUp .5s ease
+
+    button,input,textarea,select{
+      font:inherit;
     }
-    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    .header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:30px;text-align:center}
-    .header h1{font-size:2.5rem;margin-bottom:10px;font-weight:700}
-    .header p{opacity:.9;font-size:1rem}
-    .content{padding:30px}
-    .section{margin-bottom:30px}
-    .section-title{font-size:1.3rem;color:#333;margin-bottom:15px;font-weight:600;display:flex;align-items:center;gap:10px}
-    .status-indicator{width:12px;height:12px;border-radius:50%;background:#10b981;animation:pulse 2s infinite}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-    .input-group{margin-bottom:20px}
-    .input-group label{display:block;margin-bottom:8px;color:#555;font-weight:500;font-size:.95rem}
-    .input-group input{
-      width:100%;padding:14px 18px;border:2px solid #e5e7eb;border-radius:12px;font-size:1rem;
-      transition:all .3s ease;background:#f9fafb
+
+    button{
+      border:0;
+      cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
     }
-    .input-group input:focus{outline:none;border-color:#667eea;background:#fff;box-shadow:0 0 0 4px rgba(102,126,234,.1)}
-    .button-group{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
+
+    textarea{
+      resize:none;
+    }
+
+    .hidden{
+      display:none!important;
+    }
+
+    /* LOADING */
+    .loader{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#0f172a,#1d4ed8,#7c3aed);
+      transition:.45s ease;
+    }
+
+    .loader.hide{
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .loader-card{
+      width:min(320px,calc(100vw - 34px));
+      text-align:center;
+      color:white;
+      padding:24px;
+      border-radius:32px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.22);
+      backdrop-filter:blur(18px);
+      box-shadow:0 24px 80px rgba(0,0,0,.35);
+    }
+
+    .loader-card img{
+      width:125px;
+      height:125px;
+      object-fit:cover;
+      border-radius:30px;
+      margin-bottom:14px;
+      box-shadow:0 18px 45px rgba(0,0,0,.28);
+      animation:float 1.7s ease-in-out infinite;
+    }
+
+    .loader-card h1{
+      font-size:1.55rem;
+      letter-spacing:-.04em;
+      margin-bottom:6px;
+    }
+
+    .loader-card p{
+      opacity:.88;
+      font-size:.9rem;
+    }
+
+    .loader-bar{
+      height:9px;
+      margin-top:18px;
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(255,255,255,.22);
+    }
+
+    .loader-bar span{
+      display:block;
+      width:45%;
+      height:100%;
+      border-radius:999px;
+      background:white;
+      animation:loading 1.1s ease-in-out infinite;
+    }
+
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-8px)}
+    }
+
+    @keyframes loading{
+      0%{transform:translateX(-120%)}
+      100%{transform:translateX(260%)}
+    }
+
+    /* APP */
+    .app{
+      width:100%;
+      max-width:100vw;
+      height:100vh;
+      height:100dvh;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      gap:12px;
+      padding:12px;
+      overflow:hidden;
+    }
+
+    .topbar{
+      min-height:66px;
+      border-radius:26px;
+      background:var(--card);
+      border:1px solid var(--line);
+      backdrop-filter:blur(20px);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px;
+      box-shadow:0 16px 45px rgba(15,23,42,.2);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
+    .logo{
+      width:46px;
+      height:46px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      color:white;
+      font-size:1.2rem;
+      flex:0 0 auto;
+    }
+
+    .logo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .brand h1{
+      font-size:1.12rem;
+      letter-spacing:-.04em;
+      line-height:1.1;
+    }
+
+    .brand p{
+      color:var(--muted);
+      font-size:.78rem;
+      margin-top:3px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:220px;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:7px;
+    }
+
+    .mode{
+      min-height:38px;
+      padding:8px 11px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      gap:7px;
+      background:rgba(37,99,235,.12);
+      color:#1d4ed8;
+      font-weight:850;
+      font-size:.78rem;
+      white-space:nowrap;
+    }
+
+    [data-theme="dark"] .mode{
+      color:#bfdbfe;
+    }
+
+    .dot{
+      width:9px;
+      height:9px;
+      border-radius:999px;
+      background:var(--green);
+      box-shadow:0 0 0 6px rgba(34,197,94,.16);
+    }
+
+    .icon-btn{
+      width:43px;
+      height:43px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:var(--card2);
+      color:var(--text);
+      border:1px solid var(--line);
+      font-weight:900;
+    }
+
+    .layout{
+      min-height:0;
+      min-width:0;
+      display:grid;
+      grid-template-columns:330px minmax(0,1fr);
+      gap:12px;
+      overflow:hidden;
+    }
+
+    .sidebar,
+    .chat,
+    .drawer-card,
+    .modal-card{
+      background:var(--card);
+      border:1px solid var(--line);
+      backdrop-filter:blur(20px);
+      border-radius:26px;
+      box-shadow:0 16px 45px rgba(15,23,42,.18);
+    }
+
+    .sidebar{
+      min-height:0;
+      overflow:auto;
+      padding:13px;
+    }
+
+    .section{
+      background:var(--card2);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:13px;
+      margin-bottom:11px;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:11px;
+    }
+
+    .section-title h2{
+      font-size:1rem;
+      display:flex;
+      align-items:center;
+      gap:7px;
+      letter-spacing:-.03em;
+    }
+
+    .field{
+      margin-bottom:10px;
+    }
+
+    .field label{
+      display:block;
+      color:var(--muted);
+      font-size:.8rem;
+      font-weight:850;
+      margin-bottom:6px;
+    }
+
+    .input,
+    .select{
+      width:100%;
+      min-height:48px;
+      border-radius:16px;
+      border:1.5px solid var(--line);
+      background:rgba(255,255,255,.76);
+      color:var(--text);
+      outline:none;
+      padding:12px 13px;
+      font-size:16px;
+    }
+
+    [data-theme="dark"] .input,
+    [data-theme="dark"] .select{
+      background:rgba(15,23,42,.72);
+    }
+
+    .input:focus,
+    .select:focus,
+    .message-input:focus{
+      border-color:rgba(37,99,235,.8);
+      box-shadow:0 0 0 4px rgba(37,99,235,.13);
+    }
+
+    .btn-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+
     .btn{
-      padding:14px 24px;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;
-      transition:all .3s ease;display:flex;align-items:center;justify-content:center;gap:8px
+      min-height:45px;
+      border-radius:16px;
+      padding:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      background:rgba(255,255,255,.76);
+      color:var(--text);
+      border:1px solid var(--line);
+      font-weight:900;
+      transition:.18s ease;
     }
-    .btn-primary{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff}
-    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(102,126,234,.4)}
-    .btn-secondary{background:#f3f4f6;color:#374151}
-    .btn-secondary:hover{background:#e5e7eb;transform:translateY(-2px)}
-    .chat-area{
-      background:#f9fafb;border-radius:16px;padding:20px;min-height:380px;max-height:500px;overflow-y:auto;
-      margin-bottom:20px;border:2px solid #e5e7eb
+
+    [data-theme="dark"] .btn{
+      background:rgba(30,41,59,.78);
     }
-    .chat-message{
-      background:#fff;padding:12px 16px;border-radius:12px;margin-bottom:10px;box-shadow:0 2px 4px rgba(0,0,0,.05);
-      animation:slideIn .3s ease
+
+    .btn:active,
+    .chip:active,
+    .icon-btn:active,
+    .menu-item:active{
+      transform:scale(.97);
     }
-    @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-    .chat-message strong{color:#667eea;font-weight:600}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
-    .btn-tool{
-      padding:10px 16px;background:#fff;border:2px solid #e5e7eb;border-radius:10px;font-size:.9rem;cursor:pointer;
-      transition:all .3s ease;display:flex;align-items:center;gap:6px
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      color:white;
+      border:0;
+      box-shadow:0 12px 28px rgba(37,99,235,.28);
     }
-    .btn-tool:hover{border-color:#667eea;background:#f0f3ff;transform:translateY(-2px)}
-    .message-input{display:flex;gap:10px}
-    .message-input input{
-      flex:1;padding:14px 18px;border:2px solid #e5e7eb;border-radius:12px;font-size:1rem;background:#fff
+
+    .btn-danger{
+      background:rgba(239,68,68,.12);
+      color:#dc2626;
+      border-color:rgba(239,68,68,.25);
     }
-    .message-input input:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.1)}
-    .btn-send{
-      padding:14px 28px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-      color:#fff;border:none;border-radius:12px;font-weight:600;cursor:pointer;transition:all .3s ease
+
+    .note{
+      color:var(--muted);
+      font-size:.78rem;
+      line-height:1.45;
+      margin-top:10px;
     }
-    .btn-send:hover{transform:scale(1.05);box-shadow:0 8px 20px rgba(102,126,234,.4)}
-    .info-box{
-      background:#fef3c7;border-left:4px solid #f59e0b;padding:16px;border-radius:8px;margin-top:20px;
-      font-size:.9rem;color:#78350f
+
+    .feature-list{
+      display:grid;
+      gap:8px;
     }
-    .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px}
-    .feature-card{
-      background:#fff;padding:20px;border-radius:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05);
-      transition:all .3s ease
+
+    .feature{
+      display:grid;
+      grid-template-columns:42px minmax(0,1fr);
+      gap:9px;
+      align-items:center;
+      padding:10px;
+      border-radius:18px;
+      background:rgba(255,255,255,.62);
+      border:1px solid var(--line);
     }
-    .feature-card:hover{transform:translateY(-5px);box-shadow:0 8px 20px rgba(0,0,0,.1)}
-    .feature-card .icon{font-size:2rem;margin-bottom:10px}
-    .feature-card h3{font-size:1rem;color:#333;margin-bottom:5px}
-    .feature-card p{font-size:.85rem;color:#666}
-    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(5px);align-items:center;justify-content:center;z-index:1000}
-    .modal.active{display:flex}
-    .modal-content{background:#fff;padding:30px;border-radius:20px;max-width:520px;width:90%;animation:fadeInUp .3s ease}
-    .modal-content h2{margin-bottom:10px;color:#333}
-    .hidden{display:none!important}
-    @media(max-width:640px){
-      .header h1{font-size:2rem}
-      .button-group{grid-template-columns:1fr}
-      .toolbar{gap:8px}
-      .btn-tool{padding:8px 12px;font-size:.85rem}
+
+    [data-theme="dark"] .feature{
+      background:rgba(30,41,59,.62);
     }
-    .chat-area::-webkit-scrollbar{width:8px}
-    .chat-area::-webkit-scrollbar-track{background:#f1f1f1;border-radius:10px}
-    .chat-area::-webkit-scrollbar-thumb{background:#667eea;border-radius:10px}
-    .chat-area::-webkit-scrollbar-thumb:hover{background:#764ba2}
+
+    .feature-icon{
+      width:42px;
+      height:42px;
+      border-radius:15px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,rgba(37,99,235,.17),rgba(124,58,237,.17));
+      font-size:1.18rem;
+    }
+
+    .feature b{
+      display:block;
+      font-size:.88rem;
+    }
+
+    .feature span{
+      display:block;
+      color:var(--muted);
+      font-size:.74rem;
+      line-height:1.35;
+      margin-top:2px;
+    }
+
+    /* CHAT */
+    .chat{
+      min-height:0;
+      min-width:0;
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+    }
+
+    .chat-head{
+      min-height:70px;
+      padding:11px 13px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      background:linear-gradient(180deg,rgba(255,255,255,.25),transparent);
+    }
+
+    .room-info{
+      min-width:0;
+    }
+
+    .room-info b{
+      display:block;
+      font-size:1rem;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .room-info span{
+      display:block;
+      color:var(--muted);
+      font-size:.78rem;
+      margin-top:3px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .quick-actions{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:7px;
+      flex-wrap:wrap;
+    }
+
+    .chip{
+      min-height:37px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:var(--card2);
+      color:var(--text);
+      border:1px solid var(--line);
+      font-weight:850;
+      white-space:nowrap;
+    }
+
+    .messages{
+      min-height:0;
+      overflow:auto;
+      padding:16px;
+      scroll-behavior:smooth;
+    }
+
+    .empty{
+      max-width:420px;
+      margin:45px auto;
+      text-align:center;
+      padding:24px;
+      border-radius:24px;
+      background:var(--card2);
+      border:1px dashed var(--line);
+      color:var(--muted);
+    }
+
+    .empty .big{
+      font-size:2.35rem;
+      margin-bottom:8px;
+    }
+
+    .empty b{
+      color:var(--text);
+    }
+
+    .msg{
+      display:flex;
+      gap:9px;
+      margin-bottom:11px;
+      animation:msgIn .18s ease both;
+    }
+
+    @keyframes msgIn{
+      from{opacity:0;transform:translateY(8px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    .msg.mine{
+      justify-content:flex-end;
+    }
+
+    .avatar{
+      width:34px;
+      height:34px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+      margin-top:4px;
+      background:linear-gradient(135deg,#60a5fa,#a78bfa);
+      color:white;
+      font-weight:950;
+    }
+
+    .mine .avatar{
+      order:2;
+      background:linear-gradient(135deg,#22c55e,#14b8a6);
+    }
+
+    .bubble{
+      max-width:min(76%,620px);
+      padding:10px 12px;
+      border-radius:20px;
+      background:white;
+      color:#0f172a;
+      border:1px solid var(--line);
+      box-shadow:0 10px 24px rgba(15,23,42,.07);
+      overflow:hidden;
+    }
+
+    [data-theme="dark"] .bubble{
+      background:#1e293b;
+      color:#e5e7eb;
+    }
+
+    .mine .bubble{
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      color:white;
+      border:0;
+    }
+
+    .meta{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--muted);
+      font-weight:900;
+      font-size:.72rem;
+      margin-bottom:5px;
+    }
+
+    .mine .meta{
+      color:rgba(255,255,255,.82);
+    }
+
+    .text{
+      white-space:pre-wrap;
+      word-break:break-word;
+      line-height:1.45;
+    }
+
+    .attach{
+      margin-top:8px;
+      border-radius:16px;
+      overflow:hidden;
+      background:rgba(15,23,42,.07);
+      border:1px solid rgba(148,163,184,.25);
+    }
+
+    .attach img{
+      width:100%;
+      max-height:310px;
+      object-fit:cover;
+      display:block;
+    }
+
+    .attach audio{
+      width:260px;
+      max-width:100%;
+      display:block;
+      padding:8px;
+    }
+
+    .file-link{
+      display:flex;
+      gap:9px;
+      align-items:center;
+      padding:12px;
+      color:inherit;
+      text-decoration:none;
+      font-weight:900;
+      word-break:break-word;
+    }
+
+    .composer{
+      padding:11px;
+      padding-bottom:calc(11px + env(safe-area-inset-bottom));
+      border-top:1px solid var(--line);
+      background:linear-gradient(180deg,transparent,rgba(255,255,255,.14));
+    }
+
+    .composer-tools{
+      display:flex;
+      gap:7px;
+      overflow-x:auto;
+      padding-bottom:8px;
+    }
+
+    .composer-tools::-webkit-scrollbar{
+      display:none;
+    }
+
+    .composer-line{
+      display:flex;
+      align-items:flex-end;
+      gap:8px;
+    }
+
+    .message-input{
+      flex:1;
+      min-height:48px;
+      max-height:112px;
+      border-radius:18px;
+      border:1.5px solid var(--line);
+      background:rgba(255,255,255,.78);
+      color:var(--text);
+      outline:none;
+      padding:12px 13px;
+      line-height:1.35;
+      font-size:16px;
+    }
+
+    [data-theme="dark"] .message-input{
+      background:rgba(15,23,42,.72);
+    }
+
+    .send{
+      width:50px;
+      height:50px;
+      border-radius:18px;
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      color:white;
+      font-weight:950;
+      font-size:1.04rem;
+      box-shadow:0 13px 28px rgba(37,99,235,.28);
+    }
+
+    /* DRAWER + MODAL */
+    .drawer,
+    .modal{
+      position:fixed;
+      inset:0;
+      z-index:1000;
+      display:none;
+      background:rgba(15,23,42,.58);
+      backdrop-filter:blur(7px);
+      padding:12px;
+    }
+
+    .drawer.active,
+    .modal.active{
+      display:block;
+    }
+
+    .drawer-card{
+      width:min(390px,calc(100vw - 24px));
+      height:calc(100dvh - 24px);
+      margin-left:auto;
+      padding:13px;
+      overflow:auto;
+      animation:drawerIn .2s ease both;
+    }
+
+    @keyframes drawerIn{
+      from{opacity:0;transform:translateX(25px)}
+      to{opacity:1;transform:translateX(0)}
+    }
+
+    .drawer-head,
+    .modal-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .drawer-head h2,
+    .modal-head h2{
+      font-size:1.05rem;
+    }
+
+    .close{
+      width:42px;
+      height:42px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:var(--card2);
+      color:var(--text);
+      border:1px solid var(--line);
+      font-weight:950;
+    }
+
+    .menu-list{
+      display:grid;
+      gap:8px;
+    }
+
+    .menu-item{
+      min-height:53px;
+      width:100%;
+      border-radius:18px;
+      background:var(--card2);
+      color:var(--text);
+      border:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:11px;
+      text-align:left;
+      font-weight:900;
+    }
+
+    .menu-item span{
+      display:block;
+      color:var(--muted);
+      font-size:.73rem;
+      font-weight:700;
+      margin-top:2px;
+    }
+
+    .modal.active{
+      display:grid;
+      place-items:center;
+    }
+
+    .modal-card{
+      width:min(700px,100%);
+      max-height:calc(100dvh - 24px);
+      overflow:auto;
+      padding:14px;
+      animation:pop .18s ease both;
+    }
+
+    @keyframes pop{
+      from{opacity:0;transform:scale(.96)}
+      to{opacity:1;transform:scale(1)}
+    }
+
+    video{
+      width:100%;
+      max-height:48dvh;
+      border-radius:20px;
+      display:block;
+      background:#020617;
+      border:1px solid var(--line);
+      object-fit:cover;
+    }
+
+    .video-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin:10px 0;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:20px;
+      transform:translateX(-50%) translateY(18px);
+      z-index:99999;
+      max-width:calc(100vw - 28px);
+      padding:12px 15px;
+      border-radius:16px;
+      background:#0f172a;
+      color:white;
+      box-shadow:0 18px 50px rgba(0,0,0,.32);
+      opacity:0;
+      pointer-events:none;
+      transition:.24s ease;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+
+    .recording{
+      background:rgba(239,68,68,.14)!important;
+      color:#dc2626!important;
+      animation:pulse 1s infinite;
+    }
+
+    @keyframes pulse{
+      0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.28)}
+      50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}
+    }
+
+    .messages::-webkit-scrollbar,
+    .sidebar::-webkit-scrollbar,
+    .drawer-card::-webkit-scrollbar{
+      width:7px;
+    }
+
+    .messages::-webkit-scrollbar-thumb,
+    .sidebar::-webkit-scrollbar-thumb,
+    .drawer-card::-webkit-scrollbar-thumb{
+      background:#cbd5e1;
+      border-radius:999px;
+    }
+
+    /* DESKTOP/TABLET */
+    @media(max-width:900px){
+      .app{
+        padding:0;
+        gap:0;
+      }
+
+      .topbar{
+        border-radius:0;
+        border-left:0;
+        border-right:0;
+        border-top:0;
+        box-shadow:none;
+      }
+
+      .layout{
+        grid-template-columns:1fr;
+        gap:0;
+      }
+
+      .sidebar{
+        display:none;
+      }
+
+      .chat{
+        border-radius:0;
+        border-left:0;
+        border-right:0;
+        border-bottom:0;
+        box-shadow:none;
+      }
+
+      .chat-head{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .quick-actions{
+        justify-content:flex-start;
+      }
+    }
+
+    /* KHUSUS HP */
+    @media(max-width:430px){
+      :root{
+        --fontSize:14px;
+      }
+
+      .app{
+        height:100dvh;
+      }
+
+      .topbar{
+        height:58px;
+        min-height:58px;
+        padding:8px 10px;
+      }
+
+      .logo{
+        width:38px;
+        height:38px;
+        border-radius:14px;
+      }
+
+      .brand h1{
+        font-size:1rem;
+      }
+
+      .brand p{
+        display:none;
+      }
+
+      .mode{
+        display:none;
+      }
+
+      .icon-btn{
+        width:40px;
+        height:40px;
+        border-radius:15px;
+      }
+
+      .layout,
+      .chat{
+        height:calc(100dvh - 58px);
+      }
+
+      .chat-head{
+        padding:8px 9px;
+        gap:8px;
+      }
+
+      .room-info b{
+        font-size:.92rem;
+      }
+
+      .room-info span{
+        font-size:.72rem;
+      }
+
+      .quick-actions{
+        width:100%;
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:6px;
+      }
+
+      .chip{
+        min-height:36px;
+        padding:7px 8px;
+        border-radius:14px;
+        font-size:.74rem;
+        text-align:center;
+      }
+
+      .messages{
+        padding:10px 8px;
+      }
+
+      .empty{
+        margin:28px auto;
+        padding:20px 14px;
+      }
+
+      .avatar{
+        width:30px;
+        height:30px;
+        border-radius:12px;
+        font-size:.78rem;
+      }
+
+      .bubble{
+        max-width:88%;
+        padding:10px 11px;
+        border-radius:18px;
+      }
+
+      .text{
+        font-size:.9rem;
+      }
+
+      .attach img{
+        max-height:250px;
+      }
+
+      .composer{
+        padding:8px;
+        padding-bottom:calc(8px + env(safe-area-inset-bottom));
+      }
+
+      .composer-tools{
+        gap:6px;
+        padding-bottom:7px;
+      }
+
+      .composer-tools .chip{
+        flex:0 0 auto;
+        min-width:max-content;
+      }
+
+      .message-input{
+        min-height:46px;
+        max-height:96px;
+        border-radius:17px;
+      }
+
+      .send{
+        width:48px;
+        height:48px;
+        border-radius:17px;
+      }
+
+      .drawer{
+        padding:0;
+      }
+
+      .drawer-card{
+        width:100%;
+        height:100dvh;
+        border-radius:0;
+        border:0;
+        padding:12px;
+        padding-bottom:calc(12px + env(safe-area-inset-bottom));
+      }
+
+      .section{
+        padding:12px;
+        border-radius:20px;
+      }
+
+      .btn{
+        min-height:44px;
+        border-radius:15px;
+        font-size:.84rem;
+      }
+
+      .input,
+      .select{
+        min-height:46px;
+        border-radius:15px;
+      }
+
+      .modal{
+        padding:8px;
+      }
+
+      .modal-card{
+        max-height:calc(100dvh - 16px);
+        border-radius:22px;
+        padding:12px;
+      }
+
+      .video-grid{
+        grid-template-columns:1fr;
+      }
+
+      video{
+        max-height:38dvh;
+      }
+
+      .loader-card img{
+        width:116px;
+        height:116px;
+      }
+    }
+
+    @media(max-width:380px){
+      .quick-actions{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .bubble{
+        max-width:90%;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>💙 Elchat</h1>
-      <p>Chat realtime dengan fitur lengkap • Photo • Voice • Video Call</p>
+  <!-- LOADING -->
+  <div class="loader" id="loader">
+    <div class="loader-card">
+      <img src="./loading.png" alt="Elchat Loading" onerror="this.style.display='none'" />
+      <h1>Elchat</h1>
+      <p>Menyiapkan aplikasi...</p>
+      <div class="loader-bar"><span></span></div>
     </div>
+  </div>
 
-    <div class="content">
-      <!-- Features Section -->
+  <audio id="loadingAudio" src="./loading.mp3" preload="auto"></audio>
+
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">
+          <img src="./loading.png" alt="Elchat" onerror="this.remove();this.parentElement.textContent='💙'" />
+        </div>
+        <div>
+          <h1>Elchat</h1>
+          <p>Chat modern khusus HP</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="mode"><span class="dot"></span><span>Mode Lokal</span></div>
+        <button class="icon-btn" id="installBtn" title="Install">⬇️</button>
+        <button class="icon-btn" id="openMenuBtn" title="Menu">☰</button>
+      </div>
+    </header>
+
+    <section class="layout">
+      <!-- SIDEBAR DESKTOP -->
+      <aside class="sidebar">
+        <div class="section">
+          <div class="section-title">
+            <h2>🚪 Masuk Room</h2>
+          </div>
+
+          <div class="field">
+            <label>Nama Anda</label>
+            <input class="input" id="nameInput" type="text" placeholder="Contoh: El Padri" />
+          </div>
+
+          <div class="field">
+            <label>Kode Room</label>
+            <input class="input" id="roomInput" type="text" placeholder="Contoh: ELCHAT48" />
+          </div>
+
+          <div class="btn-grid">
+            <button class="btn btn-primary" id="joinBtn">🚀 Masuk</button>
+            <button class="btn" id="createBtn">➕ Buat</button>
+            <button class="btn" id="copyBtn">🔗 Link</button>
+            <button class="btn btn-danger" id="leaveBtn">🚪 Keluar</button>
+          </div>
+
+          <p class="note">Versi ini sudah disesuaikan untuk layar HP Samsung/Android.</p>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <h2>✨ Fitur</h2>
+          </div>
+
+          <div class="feature-list">
+            <div class="feature">
+              <div class="feature-icon">💬</div>
+              <div><b>Chat Room</b><span>Pesan tersimpan di browser.</span></div>
+            </div>
+
+            <div class="feature">
+              <div class="feature-icon">📷</div>
+              <div><b>Kamera & Foto</b><span>Ambil foto atau upload dari galeri.</span></div>
+            </div>
+
+            <div class="feature">
+              <div class="feature-icon">🎙️</div>
+              <div><b>Voice Note</b><span>Rekam suara dari mikrofon.</span></div>
+            </div>
+
+            <div class="feature">
+              <div class="feature-icon">⚙️</div>
+              <div><b>Pengaturan</b><span>Tema gelap/terang dan ukuran teks.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <h2>⚙️ Pengaturan Cepat</h2>
+          </div>
+
+          <div class="field">
+            <label>Tema</label>
+            <select class="select" id="themeSelect">
+              <option value="light">Terang</option>
+              <option value="dark">Gelap</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Ukuran Teks</label>
+            <select class="select" id="fontSelect">
+              <option value="14px">Kecil</option>
+              <option value="15px">Normal</option>
+              <option value="17px">Besar</option>
+            </select>
+          </div>
+
+          <button class="btn btn-danger" id="clearLocalBtn">🧹 Bersihkan Chat Lokal</button>
+        </div>
+      </aside>
+
+      <!-- CHAT -->
+      <section class="chat">
+        <div class="chat-head">
+          <div class="room-info">
+            <b id="roomTitle">Belum masuk room</b>
+            <span id="roomSub">Tekan tombol ☰ untuk masuk room dan buka menu.</span>
+          </div>
+
+          <div class="quick-actions">
+            <button class="chip" id="voiceCallBtn">📞 Voice</button>
+            <button class="chip" id="videoCallBtn">🎥 Video</button>
+            <button class="chip" id="joinCallBtn">🔗 Join</button>
+            <button class="chip" id="endCallBtn">❌ End</button>
+          </div>
+        </div>
+
+        <div class="messages" id="messages"></div>
+
+        <div class="composer">
+          <div class="composer-tools">
+            <button class="chip" id="fileBtn">📎 File</button>
+            <button class="chip" id="photoBtn">🖼️ Foto</button>
+            <button class="chip" id="cameraBtn">📷 Kamera</button>
+            <button class="chip" id="recordBtn">🎙️ Rekam</button>
+            <button class="chip hidden" id="stopRecordBtn">⏹️ Stop</button>
+            <button class="chip" id="openSettingsBtn">⚙️ Setting</button>
+          </div>
+
+          <div class="composer-line">
+            <textarea class="message-input" id="messageInput" rows="1" placeholder="Ketik pesan..."></textarea>
+            <button class="send" id="sendBtn">➤</button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- MENU HP -->
+  <div class="drawer" id="menuDrawer">
+    <div class="drawer-card">
+      <div class="drawer-head">
+        <h2>☰ Menu Elchat</h2>
+        <button class="close" id="closeMenuBtn">✕</button>
+      </div>
+
       <div class="section">
-        <div class="section-title">✨ Fitur Unggulan</div>
-        <div class="feature-grid">
-          <div class="feature-card"><div class="icon">💬</div><h3>Realtime Chat</h3><p>Pesan instan tanpa delay</p></div>
-          <div class="feature-card"><div class="icon">📷</div><h3>Photo & File</h3><p>Kirim foto dan dokumen</p></div>
-          <div class="feature-card"><div class="icon">🎙️</div><h3>Voice Note</h3><p>Rekam pesan suara</p></div>
-          <div class="feature-card"><div class="icon">📞</div><h3>Voice/Video Call</h3><p>Panggilan berkualitas</p></div>
+        <div class="section-title">
+          <h2>🚪 Room</h2>
+        </div>
+
+        <div class="field">
+          <label>Nama Anda</label>
+          <input class="input" id="nameInputMenu" type="text" placeholder="Nama..." />
+        </div>
+
+        <div class="field">
+          <label>Kode Room</label>
+          <input class="input" id="roomInputMenu" type="text" placeholder="Kode room..." />
+        </div>
+
+        <div class="btn-grid">
+          <button class="btn btn-primary" id="joinBtnMenu">🚀 Masuk</button>
+          <button class="btn" id="createBtnMenu">➕ Buat</button>
+          <button class="btn" id="copyBtnMenu">🔗 Link</button>
+          <button class="btn btn-danger" id="leaveBtnMenu">🚪 Keluar</button>
         </div>
       </div>
 
-      <!-- Login Section -->
-      <div class="section" id="loginSection">
-        <div class="section-title"><span class="status-indicator"></span> Masuk ke Room</div>
-
-        <div class="input-group">
-          <label for="nameInput">Nama Anda</label>
-          <input type="text" id="nameInput" placeholder="Masukkan nama Anda..." autocomplete="name" />
+      <div class="section">
+        <div class="section-title">
+          <h2>📌 Fitur</h2>
         </div>
 
-        <div class="input-group">
-          <label for="roomInput">Kode Room</label>
-          <input type="text" id="roomInput" placeholder="Masukkan atau buat kode room..." />
-        </div>
+        <div class="menu-list">
+          <button class="menu-item" id="menuCameraBtn">
+            <div>📷 Kamera<span>Ambil foto langsung.</span></div><b>›</b>
+          </button>
 
-        <div class="button-group">
-          <button class="btn btn-primary" id="joinBtn">🚪 Masuk Room</button>
-          <button class="btn btn-primary" id="createBtn">➕ Buat Room</button>
-          <button class="btn btn-secondary" id="copyBtn">🔗 Salin Link</button>
-        </div>
-      </div>
+          <button class="menu-item" id="menuPhotoBtn">
+            <div>🖼️ Kirim Foto<span>Pilih dari galeri HP.</span></div><b>›</b>
+          </button>
 
-      <!-- Chat Section -->
-      <div class="section hidden" id="chatSection">
-        <div class="section-title"><span class="status-indicator"></span> Chat Room</div>
+          <button class="menu-item" id="menuFileBtn">
+            <div>📎 Kirim File<span>Kirim dokumen ukuran kecil.</span></div><b>›</b>
+          </button>
 
-        <div class="toolbar">
-          <button class="btn-tool" id="voiceCallBtn">📞 Voice Call</button>
-          <button class="btn-tool" id="videoCallBtn">🎥 Video Call</button>
-          <button class="btn-tool" id="joinCallBtn">🔗 Join Call</button>
-          <button class="btn-tool" id="endCallBtn">❌ End Call</button>
-          <button class="btn-tool" id="muteBtn">🔇 Mute</button>
-          <button class="btn-tool" id="cameraToggleBtn">🚫 Camera</button>
-        </div>
+          <button class="menu-item" id="menuVoiceBtn">
+            <div>📞 Voice Call<span>Demo panggilan suara.</span></div><b>›</b>
+          </button>
 
-        <div class="chat-area" id="chatArea">
-          <div class="chat-message"><strong>Sistem:</strong> Selamat datang di Elchat! 💙</div>
-        </div>
+          <button class="menu-item" id="menuVideoBtn">
+            <div>🎥 Video Call<span>Demo panggilan video.</span></div><b>›</b>
+          </button>
 
-        <div class="toolbar">
-          <button class="btn-tool" id="fileBtn">📎 File</button>
-          <button class="btn-tool" id="photoBtn">🖼️ Foto</button>
-          <button class="btn-tool" id="cameraBtn">📷 Kamera</button>
-          <button class="btn-tool" id="recordBtn">🎙️ Rekam</button>
-          <button class="btn-tool" id="stopRecordBtn">⏹️ Stop</button>
-        </div>
-
-        <div class="message-input">
-          <input type="text" id="messageInput" placeholder="Ketik pesan Anda..." />
-          <button class="btn-send" id="sendBtn">Kirim</button>
+          <button class="menu-item" id="menuSettingsBtn">
+            <div>⚙️ Pengaturan<span>Tema, teks, dan suara loading.</span></div><b>›</b>
+          </button>
         </div>
       </div>
 
-      <div class="info-box">
-        <strong>ℹ️ Informasi:</strong> Kamera & mikrofon memerlukan HTTPS (GitHub Pages sudah HTTPS).
-        <br><br>
-        <strong>📱 Install:</strong> Chrome Android → menu ⋮ → "Add to Home screen" agar jadi PWA.
+      <div class="section">
+        <div class="section-title">
+          <h2>ℹ️ Catatan</h2>
+        </div>
+        <p class="note">
+          File <b>loading.png</b> dan <b>loading.mp3</b> harus berada satu folder dengan <b>index.html</b>.
+        </p>
       </div>
     </div>
   </div>
 
-  <!-- Camera Modal -->
-  <div class="modal" id="cameraModal" aria-hidden="true">
-    <div class="modal-content">
-      <h2>📷 Kamera</h2>
-      <p style="color:#666;font-size:.9rem;margin-bottom:10px">
-        Klik "Mulai Kamera" untuk menampilkan preview, lalu ambil foto.
-      </p>
-
-      <video id="cameraPreview" autoplay playsinline style="width:100%;border-radius:12px;margin:10px 0;background:#000"></video>
-
-      <div class="button-group">
-        <button class="btn btn-primary" id="startCamBtn">▶️ Mulai Kamera</button>
-        <button class="btn btn-primary" id="captureBtn">📸 Ambil Foto</button>
-        <button class="btn btn-secondary" id="closeCamBtn">❌ Tutup</button>
+  <!-- SETTINGS -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2>⚙️ Pengaturan</h2>
+        <button class="close" id="closeSettingsBtn">✕</button>
       </div>
 
-      <!-- canvas hidden untuk capture -->
+      <div class="section">
+        <div class="field">
+          <label>Tema</label>
+          <select class="select" id="themeSelectModal">
+            <option value="light">Terang</option>
+            <option value="dark">Gelap</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Ukuran Teks</label>
+          <select class="select" id="fontSelectModal">
+            <option value="14px">Kecil</option>
+            <option value="15px">Normal</option>
+            <option value="17px">Besar</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Suara Loading</label>
+          <select class="select" id="soundSelect">
+            <option value="on">Aktif</option>
+            <option value="off">Mati</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" id="saveSettingsBtn">💾 Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMERA -->
+  <div class="modal" id="cameraModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2>📷 Kamera</h2>
+        <button class="close" id="closeCamBtn">✕</button>
+      </div>
+
+      <video id="cameraPreview" autoplay playsinline muted></video>
+
+      <div class="btn-grid" style="margin-top:12px">
+        <button class="btn btn-primary" id="startCamBtn">▶️ Mulai Kamera</button>
+        <button class="btn" id="captureBtn">📸 Ambil Foto</button>
+      </div>
+
       <canvas id="captureCanvas" class="hidden"></canvas>
     </div>
   </div>
 
-  <!-- Load JS dari file repo kamu -->
-  <script src="./firebase.js"></script>
-  <script src="./call.js"></script>
-  <script src="./app.js"></script>
+  <!-- CALL -->
+  <div class="modal" id="callModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="callTitle">📞 Panggilan</h2>
+        <button class="close" id="closeCallBtn">✕</button>
+      </div>
 
-  <!-- Fallback JS (kalau app.js/firebase.js/call.js belum siap, ini tetap bikin demo berfungsi) -->
+      <div class="video-grid">
+        <div>
+          <p class="note" style="margin:0 0 6px">Kamera/Mikrofon Anda</p>
+          <video id="localVideo" autoplay playsinline muted></video>
+        </div>
+
+        <div>
+          <p class="note" style="margin:0 0 6px">Lawan Bicara</p>
+          <video id="remoteVideo" autoplay playsinline></video>
+        </div>
+      </div>
+
+      <div class="btn-grid">
+        <button class="btn" id="muteCallBtn">🔇 Mute</button>
+        <button class="btn" id="camCallBtn">🚫 Kamera</button>
+        <button class="btn btn-danger" id="endCallModalBtn">Akhiri</button>
+      </div>
+
+      <p class="note">
+        Tombol call ini demo kamera/mikrofon. Kalau mau call realtime antar HP, nanti perlu Firebase/WebRTC tambahan.
+      </p>
+    </div>
+  </div>
+
+  <input id="fileInput" type="file" class="hidden" />
+  <input id="photoInput" type="file" accept="image/*" class="hidden" />
+
+  <div class="toast" id="toast"></div>
+
   <script>
-    // ===============================
-    // Util: ambil query param room
-    // ===============================
-    function getQueryParam(key) {
-      const url = new URL(window.location.href);
-      return url.searchParams.get(key) || "";
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      name:"",
+      room:"",
+      messages:[],
+      localChannel:null,
+      mediaRecorder:null,
+      recordChunks:[],
+      cameraStream:null,
+      callStream:null,
+      muted:false,
+      cameraOff:false,
+      deferredInstallPrompt:null
+    };
+
+    const sessionId = Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+    function toast(text){
+      const el = $("toast");
+      el.textContent = text;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2300);
     }
 
-    // ===============================
-    // UI helpers
-    // ===============================
-    const el = (id) => document.getElementById(id);
-
-    function showChat() {
-      el("loginSection").classList.add("hidden");
-      el("chatSection").classList.remove("hidden");
-    }
-    function showLogin() {
-      el("loginSection").classList.remove("hidden");
-      el("chatSection").classList.add("hidden");
+    function nowTime(){
+      return new Date().toLocaleTimeString("id-ID",{
+        hour:"2-digit",
+        minute:"2-digit"
+      });
     }
 
-    // Aman dari XSS: tidak pakai innerHTML untuk input user
-    function addMessageSafe(sender, text) {
-      const chatArea = el("chatArea");
-      const messageDiv = document.createElement("div");
-      messageDiv.className = "chat-message";
-
-      const strong = document.createElement("strong");
-      strong.textContent = sender + ": ";
-
-      const span = document.createElement("span");
-      span.textContent = text;
-
-      messageDiv.appendChild(strong);
-      messageDiv.appendChild(span);
-      chatArea.appendChild(messageDiv);
-      chatArea.scrollTop = chatArea.scrollHeight;
+    function initials(name){
+      return (name || "A").trim().slice(0,1).toUpperCase();
     }
 
-    // ===============================
-    // Room logic (demo fallback)
-    // Kalau app.js punya joinRoom/createRoom sendiri, kamu bisa hapus fallback ini.
-    // ===============================
-    function createRoomCode() {
-      return "ROOM-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+    function safeName(name){
+      return (name || "Anonim").trim().slice(0,32);
     }
 
-    function joinRoomFallback() {
-      const name = el("nameInput").value.trim();
-      const room = el("roomInput").value.trim();
-
-      if (!name || !room) return alert("Mohon isi nama dan kode room!");
-
-      showChat();
-      addMessageSafe("Sistem", `${name} bergabung ke room ${room}`);
+    function makeRoomCode(){
+      return "EL-" + Math.random().toString(36).slice(2,8).toUpperCase();
     }
 
-    function createRoomFallback() {
-      const roomCode = createRoomCode();
-      el("roomInput").value = roomCode;
-      alert(`Room baru dibuat: ${roomCode}`);
+    function getRoomFromUrl(){
+      return new URL(location.href).searchParams.get("room") || "";
     }
 
-    async function copyLinkFallback() {
-      const room = el("roomInput").value.trim();
-      if (!room) return alert("Buat room terlebih dahulu!");
-      const link = `${window.location.origin}${window.location.pathname}?room=${encodeURIComponent(room)}`;
-      try {
-        await navigator.clipboard.writeText(link);
-        alert("Link room disalin!");
-      } catch {
-        // fallback: prompt manual
-        window.prompt("Salin link ini:", link);
+    function setRoomUrl(room){
+      const url = new URL(location.href);
+      url.searchParams.set("room", room);
+      history.replaceState(null,"",url.toString());
+    }
+
+    function localKey(){
+      return "elchat_messages_" + state.room;
+    }
+
+    function saveLocal(){
+      try{
+        localStorage.setItem(localKey(), JSON.stringify(state.messages.slice(-150)));
+      }catch(e){}
+    }
+
+    function loadLocal(){
+      try{
+        state.messages = JSON.parse(localStorage.getItem(localKey()) || "[]");
+      }catch(e){
+        state.messages = [];
       }
     }
 
-    function sendMessageFallback() {
-      const message = el("messageInput").value.trim();
-      if (!message) return;
-      const name = el("nameInput").value.trim() || "Anonim";
-      addMessageSafe(name, message);
-      el("messageInput").value = "";
+    function needRoom(){
+      if(!state.name || !state.room){
+        toast("Masuk room dulu lewat menu ☰");
+        return true;
+      }
+      return false;
     }
 
-    // ===============================
-    // Camera: beneran nyala + capture
-    // ===============================
-    let camStream = null;
-
-    function openCameraModal() {
-      el("cameraModal").classList.add("active");
-      el("cameraModal").setAttribute("aria-hidden", "false");
+    function openDrawer(){
+      $("nameInputMenu").value = $("nameInput").value;
+      $("roomInputMenu").value = $("roomInput").value;
+      $("menuDrawer").classList.add("active");
     }
 
-    async function startCamera() {
-      try {
-        camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        el("cameraPreview").srcObject = camStream;
-      } catch (err) {
-        alert("Gagal membuka kamera. Pastikan izin kamera aktif.\n" + err.message);
+    function closeDrawer(){
+      $("menuDrawer").classList.remove("active");
+    }
+
+    function openSettings(){
+      syncSettingsInputs();
+      $("settingsModal").classList.add("active");
+      closeDrawer();
+    }
+
+    function closeSettings(){
+      $("settingsModal").classList.remove("active");
+    }
+
+    function getSettings(){
+      return {
+        theme:localStorage.getItem("elchat_theme") || "light",
+        font:localStorage.getItem("elchat_font") || "15px",
+        sound:localStorage.getItem("elchat_sound") || "on"
+      };
+    }
+
+    function syncSettingsInputs(){
+      const s = getSettings();
+      $("themeSelect").value = s.theme;
+      $("themeSelectModal").value = s.theme;
+      $("fontSelect").value = s.font;
+      $("fontSelectModal").value = s.font;
+      $("soundSelect").value = s.sound;
+    }
+
+    function applySettings(){
+      const s = getSettings();
+      document.documentElement.dataset.theme = s.theme;
+      document.documentElement.style.setProperty("--fontSize", s.font);
+      syncSettingsInputs();
+    }
+
+    function saveSettings(){
+      localStorage.setItem("elchat_theme", $("themeSelectModal").value);
+      localStorage.setItem("elchat_font", $("fontSelectModal").value);
+      localStorage.setItem("elchat_sound", $("soundSelect").value);
+      applySettings();
+      closeSettings();
+      toast("Pengaturan disimpan");
+    }
+
+    function createRoom(){
+      const code = makeRoomCode();
+      $("roomInput").value = code;
+      $("roomInputMenu").value = code;
+      setRoomUrl(code);
+      toast("Room dibuat: " + code);
+    }
+
+    function setupLocalChannel(){
+      try{
+        if(state.localChannel) state.localChannel.close();
+
+        state.localChannel = new BroadcastChannel("elchat_" + state.room);
+
+        state.localChannel.onmessage = (event) => {
+          const msg = event.data;
+          if(!msg || msg.senderId === sessionId) return;
+          state.messages.push(msg);
+          saveLocal();
+          renderMessages();
+        };
+      }catch(e){}
+    }
+
+    function broadcastLocal(msg){
+      try{
+        if(state.localChannel) state.localChannel.postMessage(msg);
+      }catch(e){}
+    }
+
+    function joinRoom(){
+      const name = safeName($("nameInput").value || $("nameInputMenu").value);
+      const room = ($("roomInput").value || $("roomInputMenu").value).trim().toUpperCase();
+
+      if(!name || !room){
+        toast("Isi nama dan kode room");
+        return;
+      }
+
+      state.name = name;
+      state.room = room;
+
+      $("nameInput").value = name;
+      $("nameInputMenu").value = name;
+      $("roomInput").value = room;
+      $("roomInputMenu").value = room;
+
+      $("roomTitle").textContent = "Room " + room;
+      $("roomSub").textContent = "Masuk sebagai " + name;
+
+      setRoomUrl(room);
+      loadLocal();
+      setupLocalChannel();
+
+      const msg = {
+        id:Date.now().toString(),
+        senderId:sessionId,
+        sender:"Sistem",
+        text:name + " bergabung ke room " + room,
+        time:nowTime()
+      };
+
+      state.messages.push(msg);
+      saveLocal();
+      broadcastLocal(msg);
+      renderMessages();
+
+      closeDrawer();
+      toast("Masuk ke room " + room);
+    }
+
+    async function copyLink(){
+      const room = ($("roomInput").value || $("roomInputMenu").value).trim().toUpperCase();
+
+      if(!room){
+        toast("Buat atau isi kode room dulu");
+        return;
+      }
+
+      const url = new URL(location.href);
+      url.searchParams.set("room", room);
+
+      try{
+        await navigator.clipboard.writeText(url.toString());
+        toast("Link room disalin");
+      }catch(e){
+        prompt("Salin link ini:", url.toString());
       }
     }
 
-    function stopCamera() {
-      if (camStream) {
-        camStream.getTracks().forEach((t) => t.stop());
-        camStream = null;
-      }
-      el("cameraPreview").srcObject = null;
+    function leaveRoom(){
+      if(state.localChannel) state.localChannel.close();
+      state.localChannel = null;
+      state.name = "";
+      state.room = "";
+      state.messages = [];
+      $("roomTitle").textContent = "Belum masuk room";
+      $("roomSub").textContent = "Tekan tombol ☰ untuk masuk room dan buka menu.";
+      renderMessages();
+      closeDrawer();
+      toast("Keluar dari room");
     }
 
-    function closeCameraModal() {
+    function clearLocal(){
+      if(!state.room){
+        toast("Belum ada room aktif");
+        return;
+      }
+
+      localStorage.removeItem(localKey());
+      state.messages = [];
+      renderMessages();
+      toast("Chat lokal dibersihkan");
+    }
+
+    function renderMessages(){
+      const box = $("messages");
+      box.innerHTML = "";
+
+      if(!state.messages.length){
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.innerHTML = `
+          <div class="big">💙</div>
+          <b>Selamat datang di Elchat</b>
+          <p style="margin-top:7px;line-height:1.45">
+            Tekan menu ☰, isi nama dan room, lalu mulai chat.
+          </p>
+        `;
+        box.appendChild(empty);
+        return;
+      }
+
+      for(const msg of state.messages){
+        const mine = msg.senderId === sessionId || msg.sender === state.name;
+
+        const wrap = document.createElement("div");
+        wrap.className = "msg" + (mine ? " mine" : "");
+
+        const avatar = document.createElement("div");
+        avatar.className = "avatar";
+        avatar.textContent = initials(msg.sender);
+
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+
+        const meta = document.createElement("div");
+        meta.className = "meta";
+
+        const sender = document.createElement("span");
+        sender.textContent = msg.sender || "Anonim";
+
+        const time = document.createElement("span");
+        time.textContent = msg.time || nowTime();
+
+        meta.appendChild(sender);
+        meta.appendChild(time);
+        bubble.appendChild(meta);
+
+        if(msg.text){
+          const text = document.createElement("div");
+          text.className = "text";
+          text.textContent = msg.text;
+          bubble.appendChild(text);
+        }
+
+        if(msg.attachment && msg.attachment.dataUrl){
+          bubble.appendChild(renderAttachment(msg.attachment));
+        }
+
+        wrap.appendChild(avatar);
+        wrap.appendChild(bubble);
+        box.appendChild(wrap);
+      }
+
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function renderAttachment(att){
+      const div = document.createElement("div");
+      div.className = "attach";
+
+      if(att.type && att.type.startsWith("image/")){
+        const img = document.createElement("img");
+        img.src = att.dataUrl;
+        img.alt = att.name || "Foto";
+        div.appendChild(img);
+        return div;
+      }
+
+      if(att.type && att.type.startsWith("audio/")){
+        const audio = document.createElement("audio");
+        audio.controls = true;
+        audio.src = att.dataUrl;
+        div.appendChild(audio);
+        return div;
+      }
+
+      const a = document.createElement("a");
+      a.href = att.dataUrl;
+      a.download = att.name || "file";
+      a.className = "file-link";
+      a.textContent = "📎 " + (att.name || "Download file");
+      div.appendChild(a);
+      return div;
+    }
+
+    async function sendMessage(extra = {}){
+      if(needRoom()) return;
+
+      const input = $("messageInput");
+      const text = (extra.text ?? input.value).trim();
+
+      if(!text && !extra.attachment) return;
+
+      const msg = {
+        id:Date.now().toString(),
+        senderId:sessionId,
+        sender:state.name,
+        text:text,
+        attachment:extra.attachment || null,
+        time:nowTime()
+      };
+
+      state.messages.push(msg);
+      saveLocal();
+      broadcastLocal(msg);
+      renderMessages();
+
+      input.value = "";
+      autoGrow(input);
+    }
+
+    function autoGrow(el){
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 112) + "px";
+    }
+
+    function blobToDataURL(blob){
+      return new Promise((resolve,reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function resizeImage(file){
+      const dataUrl = await blobToDataURL(file);
+
+      return new Promise((resolve) => {
+        const img = new Image();
+
+        img.onload = () => {
+          const maxWidth = 1200;
+          const scale = Math.min(1, maxWidth / img.width);
+
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+
+          canvas.toBlob(async (blob) => {
+            resolve({
+              dataUrl:await blobToDataURL(blob),
+              type:"image/jpeg",
+              name:file.name.replace(/\.[^.]+$/,"") + ".jpg"
+            });
+          }, "image/jpeg", .74);
+        };
+
+        img.src = dataUrl;
+      });
+    }
+
+    async function handleFile(file){
+      if(needRoom()) return;
+      if(!file) return;
+
+      try{
+        let attachment;
+
+        if(file.type.startsWith("image/")){
+          attachment = await resizeImage(file);
+        }else{
+          if(file.size > 900 * 1024){
+            toast("File terlalu besar. Maksimal sekitar 900KB");
+            return;
+          }
+
+          attachment = {
+            dataUrl:await blobToDataURL(file),
+            type:file.type || "application/octet-stream",
+            name:file.name || "file"
+          };
+        }
+
+        await sendMessage({
+          text:file.type.startsWith("image/") ? "Mengirim foto." : "Mengirim file.",
+          attachment
+        });
+
+        closeDrawer();
+      }catch(e){
+        toast("Gagal membaca file");
+      }
+    }
+
+    function openCamera(){
+      if(needRoom()) return;
+      closeDrawer();
+      $("cameraModal").classList.add("active");
+    }
+
+    async function startCamera(){
+      try{
+        stopCamera();
+
+        state.cameraStream = await navigator.mediaDevices.getUserMedia({
+          video:{facingMode:"environment"},
+          audio:false
+        });
+
+        $("cameraPreview").srcObject = state.cameraStream;
+      }catch(e){
+        toast("Kamera gagal dibuka. Izinkan akses kamera");
+      }
+    }
+
+    function stopCamera(){
+      if(state.cameraStream){
+        state.cameraStream.getTracks().forEach(t => t.stop());
+        state.cameraStream = null;
+      }
+
+      $("cameraPreview").srcObject = null;
+    }
+
+    function closeCamera(){
       stopCamera();
-      el("cameraModal").classList.remove("active");
-      el("cameraModal").setAttribute("aria-hidden", "true");
+      $("cameraModal").classList.remove("active");
     }
 
-    function capturePhoto() {
-      const video = el("cameraPreview");
-      if (!video.srcObject) return alert("Kamera belum dimulai!");
+    function capturePhoto(){
+      const video = $("cameraPreview");
 
-      const canvas = el("captureCanvas");
-      const w = video.videoWidth || 640;
-      const h = video.videoHeight || 480;
+      if(!video.srcObject){
+        toast("Mulai kamera dulu");
+        return;
+      }
+
+      const canvas = $("captureCanvas");
+      const w = video.videoWidth || 720;
+      const h = video.videoHeight || 960;
+
       canvas.width = w;
       canvas.height = h;
+      canvas.getContext("2d").drawImage(video,0,0,w,h);
 
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0, w, h);
+      canvas.toBlob(async (blob) => {
+        const attachment = {
+          dataUrl:await blobToDataURL(blob),
+          type:"image/jpeg",
+          name:"kamera-elchat.jpg"
+        };
 
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        // demo: kirim sebagai "pesan"
-        addMessageSafe("Sistem", "📷 Foto diambil (demo). Kamu bisa sambungkan upload ke Firebase Storage di app.js.");
-      }, "image/jpeg", 0.9);
+        await sendMessage({
+          text:"Foto dari kamera.",
+          attachment
+        });
+
+        closeCamera();
+      }, "image/jpeg", .76);
     }
 
-    // ===============================
-    // Bind tombol ke fungsi:
-    // Jika di app.js kamu sudah punya global function joinRoom(), dsb,
-    // tombol akan pakai yang global itu. Kalau tidak ada, pakai fallback.
-    // ===============================
-    function existsFn(name) {
-      return typeof window[name] === "function";
+    async function startRecord(){
+      if(needRoom()) return;
+
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+
+        state.recordChunks = [];
+        state.mediaRecorder = new MediaRecorder(stream);
+
+        state.mediaRecorder.ondataavailable = (event) => {
+          if(event.data.size) state.recordChunks.push(event.data);
+        };
+
+        state.mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+
+          const blob = new Blob(state.recordChunks, {type:"audio/webm"});
+
+          if(blob.size > 900 * 1024){
+            toast("Voice note terlalu panjang");
+            return;
+          }
+
+          const attachment = {
+            dataUrl:await blobToDataURL(blob),
+            type:"audio/webm",
+            name:"voice-note.webm"
+          };
+
+          await sendMessage({
+            text:"Voice note.",
+            attachment
+          });
+        };
+
+        state.mediaRecorder.start();
+
+        $("recordBtn").classList.add("hidden");
+        $("stopRecordBtn").classList.remove("hidden");
+        $("stopRecordBtn").classList.add("recording");
+
+        toast("Rekaman dimulai");
+      }catch(e){
+        toast("Mikrofon gagal dibuka. Izinkan akses mikrofon");
+      }
     }
 
-    el("joinBtn").addEventListener("click", () => (existsFn("joinRoom") ? window.joinRoom() : joinRoomFallback()));
-    el("createBtn").addEventListener("click", () => (existsFn("createRoom") ? window.createRoom() : createRoomFallback()));
-    el("copyBtn").addEventListener("click", () => (existsFn("copyLink") ? window.copyLink() : copyLinkFallback()));
+    function stopRecord(){
+      if(state.mediaRecorder && state.mediaRecorder.state !== "inactive"){
+        state.mediaRecorder.stop();
+      }
 
-    el("sendBtn").addEventListener("click", () => (existsFn("sendMessage") ? window.sendMessage() : sendMessageFallback()));
+      $("recordBtn").classList.remove("hidden");
+      $("stopRecordBtn").classList.add("hidden");
+      $("stopRecordBtn").classList.remove("recording");
 
-    el("messageInput").addEventListener("keypress", (e) => {
-      if (e.key === "Enter") (existsFn("sendMessage") ? window.sendMessage() : sendMessageFallback());
-    });
-
-    // Call buttons: fallback alert kalau call.js belum implement
-    const callMap = [
-      ["voiceCallBtn", "voiceCall", "Memulai voice call..."],
-      ["videoCallBtn", "videoCall", "Memulai video call..."],
-      ["joinCallBtn", "joinCall", "Bergabung ke call..."],
-      ["endCallBtn", "endCall", "Mengakhiri call..."],
-      ["muteBtn", "toggleMute", "Toggle mute..."],
-      ["cameraToggleBtn", "toggleCamera", "Toggle camera..."],
-    ];
-    for (const [btnId, fnName, msg] of callMap) {
-      el(btnId).addEventListener("click", () => (existsFn(fnName) ? window[fnName]() : alert(msg)));
+      toast("Rekaman selesai");
     }
 
-    // Attach tools: fallback demo
-    el("fileBtn").addEventListener("click", () => (existsFn("attachFile") ? window.attachFile() : alert("Memilih file (demo)...")));
-    el("photoBtn").addEventListener("click", () => (existsFn("attachPhoto") ? window.attachPhoto() : alert("Memilih foto (demo)...")));
-    el("recordBtn").addEventListener("click", () => (existsFn("startRecord") ? window.startRecord() : alert("Mulai rekam (demo)...")));
-    el("stopRecordBtn").addEventListener("click", () => (existsFn("stopRecord") ? window.stopRecord() : alert("Stop rekam (demo)...")));
+    async function startCall(videoMode){
+      if(needRoom()) return;
+      closeDrawer();
 
-    // Camera modal
-    el("cameraBtn").addEventListener("click", openCameraModal);
-    el("startCamBtn").addEventListener("click", startCamera);
-    el("captureBtn").addEventListener("click", capturePhoto);
-    el("closeCamBtn").addEventListener("click", closeCameraModal);
+      $("callTitle").textContent = videoMode ? "🎥 Video Call Demo" : "📞 Voice Call Demo";
+      $("callModal").classList.add("active");
 
-    // Auto isi room dari URL ?room=
-    const roomFromUrl = getQueryParam("room");
-    if (roomFromUrl) {
-      el("roomInput").value = roomFromUrl;
-      // optional: auto fokus nama
-      el("nameInput").focus();
+      try{
+        stopCall();
+
+        state.callStream = await navigator.mediaDevices.getUserMedia({
+          video:videoMode ? {facingMode:"user"} : false,
+          audio:true
+        });
+
+        $("localVideo").srcObject = state.callStream;
+
+        if(!videoMode){
+          toast("Voice call aktif. Mikrofon menyala");
+        }else{
+          toast("Video call aktif. Kamera menyala");
+        }
+      }catch(e){
+        toast("Gagal membuka kamera/mikrofon");
+      }
     }
 
-    // Register Service Worker (PWA)
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js").catch(console.error);
+    function stopCall(){
+      if(state.callStream){
+        state.callStream.getTracks().forEach(t => t.stop());
+        state.callStream = null;
+      }
+
+      $("localVideo").srcObject = null;
+      $("remoteVideo").srcObject = null;
+
+      state.muted = false;
+      state.cameraOff = false;
+
+      $("muteCallBtn").textContent = "🔇 Mute";
+      $("camCallBtn").textContent = "🚫 Kamera";
     }
+
+    function closeCall(){
+      stopCall();
+      $("callModal").classList.remove("active");
+      toast("Call diakhiri");
+    }
+
+    function toggleMute(){
+      if(!state.callStream){
+        toast("Belum ada call aktif");
+        return;
+      }
+
+      state.muted = !state.muted;
+
+      state.callStream.getAudioTracks().forEach(track => {
+        track.enabled = !state.muted;
+      });
+
+      $("muteCallBtn").textContent = state.muted ? "🔊 Unmute" : "🔇 Mute";
+    }
+
+    function toggleCameraCall(){
+      if(!state.callStream){
+        toast("Belum ada call aktif");
+        return;
+      }
+
+      state.cameraOff = !state.cameraOff;
+
+      state.callStream.getVideoTracks().forEach(track => {
+        track.enabled = !state.cameraOff;
+      });
+
+      $("camCallBtn").textContent = state.cameraOff ? "📷 Kamera On" : "🚫 Kamera";
+    }
+
+    function playLoadingSound(){
+      const s = getSettings();
+      if(s.sound !== "on") return;
+
+      const audio = $("loadingAudio");
+      audio.volume = .45;
+      audio.play().catch(() => {});
+    }
+
+    function hideLoader(){
+      setTimeout(() => {
+        $("loader").classList.add("hide");
+        setTimeout(() => {
+          if($("loader")) $("loader").remove();
+        }, 600);
+      }, 900);
+    }
+
+    function initEvents(){
+      $("openMenuBtn").addEventListener("click", openDrawer);
+      $("closeMenuBtn").addEventListener("click", closeDrawer);
+
+      $("openSettingsBtn").addEventListener("click", openSettings);
+      $("menuSettingsBtn").addEventListener("click", openSettings);
+      $("closeSettingsBtn").addEventListener("click", closeSettings);
+      $("saveSettingsBtn").addEventListener("click", saveSettings);
+
+      $("themeSelect").addEventListener("change", () => {
+        localStorage.setItem("elchat_theme", $("themeSelect").value);
+        applySettings();
+      });
+
+      $("fontSelect").addEventListener("change", () => {
+        localStorage.setItem("elchat_font", $("fontSelect").value);
+        applySettings();
+      });
+
+      $("createBtn").addEventListener("click", createRoom);
+      $("createBtnMenu").addEventListener("click", createRoom);
+
+      $("joinBtn").addEventListener("click", joinRoom);
+      $("joinBtnMenu").addEventListener("click", () => {
+        $("nameInput").value = $("nameInputMenu").value;
+        $("roomInput").value = $("roomInputMenu").value;
+        joinRoom();
+      });
+
+      $("copyBtn").addEventListener("click", copyLink);
+      $("copyBtnMenu").addEventListener("click", copyLink);
+
+      $("leaveBtn").addEventListener("click", leaveRoom);
+      $("leaveBtnMenu").addEventListener("click", leaveRoom);
+
+      $("clearLocalBtn").addEventListener("click", clearLocal);
+
+      $("sendBtn").addEventListener("click", () => sendMessage());
+
+      $("messageInput").addEventListener("input", (e) => autoGrow(e.target));
+
+      $("messageInput").addEventListener("keydown", (e) => {
+        if(e.key === "Enter" && !e.shiftKey){
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      $("fileBtn").addEventListener("click", () => $("fileInput").click());
+      $("photoBtn").addEventListener("click", () => $("photoInput").click());
+      $("menuFileBtn").addEventListener("click", () => $("fileInput").click());
+      $("menuPhotoBtn").addEventListener("click", () => $("photoInput").click());
+
+      $("fileInput").addEventListener("change", (e) => {
+        handleFile(e.target.files[0]);
+        e.target.value = "";
+      });
+
+      $("photoInput").addEventListener("change", (e) => {
+        handleFile(e.target.files[0]);
+        e.target.value = "";
+      });
+
+      $("cameraBtn").addEventListener("click", openCamera);
+      $("menuCameraBtn").addEventListener("click", openCamera);
+      $("startCamBtn").addEventListener("click", startCamera);
+      $("captureBtn").addEventListener("click", capturePhoto);
+      $("closeCamBtn").addEventListener("click", closeCamera);
+
+      $("recordBtn").addEventListener("click", startRecord);
+      $("stopRecordBtn").addEventListener("click", stopRecord);
+
+      $("voiceCallBtn").addEventListener("click", () => startCall(false));
+      $("videoCallBtn").addEventListener("click", () => startCall(true));
+      $("menuVoiceBtn").addEventListener("click", () => startCall(false));
+      $("menuVideoBtn").addEventListener("click", () => startCall(true));
+      $("joinCallBtn").addEventListener("click", () => toast("Untuk join call realtime perlu Firebase/WebRTC tambahan"));
+      $("endCallBtn").addEventListener("click", closeCall);
+      $("endCallModalBtn").addEventListener("click", closeCall);
+      $("closeCallBtn").addEventListener("click", closeCall);
+      $("muteCallBtn").addEventListener("click", toggleMute);
+      $("camCallBtn").addEventListener("click", toggleCameraCall);
+
+      document.addEventListener("pointerdown", playLoadingSound, {once:true});
+
+      window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        state.deferredInstallPrompt = event;
+      });
+
+      $("installBtn").addEventListener("click", async () => {
+        if(!state.deferredInstallPrompt){
+          toast("Install lewat Chrome ⋮ > Add to Home screen");
+          return;
+        }
+
+        state.deferredInstallPrompt.prompt();
+        await state.deferredInstallPrompt.userChoice;
+        state.deferredInstallPrompt = null;
+      });
+    }
+
+    function init(){
+      applySettings();
+      initEvents();
+
+      const roomFromUrl = getRoomFromUrl();
+
+      if(roomFromUrl){
+        $("roomInput").value = roomFromUrl.toUpperCase();
+        $("roomInputMenu").value = roomFromUrl.toUpperCase();
+      }
+
+      renderMessages();
+      playLoadingSound();
+      hideLoader();
+
+      if("serviceWorker" in navigator){
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      }
+    }
+
+    init();
   </script>
 </body>
 </html>
