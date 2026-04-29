@@ -1,17 +1,17 @@
 {
-  "id": "./",
   "name": "Elchat",
   "short_name": "Elchat",
-  "description": "Chat realtime bertema biru modern: pesan, foto, file, voice note, voice & video call.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#061023",
-  "theme_color": "#0b4cff",
-  "categories": ["communication", "social"],
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "description": "Elchat modern untuk HP Android.",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "./loading.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
