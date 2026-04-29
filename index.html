@@ -7,8 +7,10 @@
 
   <link rel="manifest" href="./manifest.webmanifest" />
   <meta name="theme-color" content="#2563eb" />
-  <link rel="icon" href="./loading.png" />
-  <link rel="apple-touch-icon" href="./loading.png" />
+
+  <!-- ICON APLIKASI -->
+  <link rel="icon" href="./icon.png" />
+  <link rel="apple-touch-icon" href="./icon.png" />
 
   <style>
     :root{
@@ -79,7 +81,6 @@
       display:none!important;
     }
 
-    /* LOADING */
     .loader{
       position:fixed;
       inset:0;
@@ -155,7 +156,6 @@
       100%{transform:translateX(260%)}
     }
 
-    /* APP */
     .app{
       width:100%;
       max-width:100vw;
@@ -450,7 +450,6 @@
       margin-top:2px;
     }
 
-    /* CHAT */
     .chat{
       min-height:0;
       min-width:0;
@@ -703,7 +702,6 @@
       box-shadow:0 13px 28px rgba(37,99,235,.28);
     }
 
-    /* DRAWER + MODAL */
     .drawer,
     .modal{
       position:fixed;
@@ -872,7 +870,6 @@
       border-radius:999px;
     }
 
-    /* DESKTOP/TABLET */
     @media(max-width:900px){
       .app{
         padding:0;
@@ -914,7 +911,6 @@
       }
     }
 
-    /* KHUSUS HP */
     @media(max-width:430px){
       :root{
         --fontSize:14px;
@@ -1111,7 +1107,6 @@
 </head>
 
 <body>
-  <!-- LOADING -->
   <div class="loader" id="loader">
     <div class="loader-card">
       <img src="./loading.png" alt="Elchat Loading" onerror="this.style.display='none'" />
@@ -1121,13 +1116,11 @@
     </div>
   </div>
 
-  <audio id="loadingAudio" src="./loading.mp3" preload="auto"></audio>
-
   <main class="app">
     <header class="topbar">
       <div class="brand">
         <div class="logo">
-          <img src="./loading.png" alt="Elchat" onerror="this.remove();this.parentElement.textContent='💙'" />
+          <img src="./icon.png" alt="Elchat" onerror="this.remove();this.parentElement.textContent='💙'" />
         </div>
         <div>
           <h1>Elchat</h1>
@@ -1143,7 +1136,6 @@
     </header>
 
     <section class="layout">
-      <!-- SIDEBAR DESKTOP -->
       <aside class="sidebar">
         <div class="section">
           <div class="section-title">
@@ -1224,7 +1216,6 @@
         </div>
       </aside>
 
-      <!-- CHAT -->
       <section class="chat">
         <div class="chat-head">
           <div class="room-info">
@@ -1261,7 +1252,6 @@
     </section>
   </main>
 
-  <!-- MENU HP -->
   <div class="drawer" id="menuDrawer">
     <div class="drawer-card">
       <div class="drawer-head">
@@ -1329,13 +1319,12 @@
           <h2>ℹ️ Catatan</h2>
         </div>
         <p class="note">
-          File <b>loading.png</b> dan <b>loading.mp3</b> harus berada satu folder dengan <b>index.html</b>.
+          File <b>icon.png</b> dan <b>loading.png</b> harus berada satu folder dengan <b>index.html</b>.
         </p>
       </div>
     </div>
   </div>
 
-  <!-- SETTINGS -->
   <div class="modal" id="settingsModal">
     <div class="modal-card">
       <div class="modal-head">
@@ -1374,7 +1363,6 @@
     </div>
   </div>
 
-  <!-- CAMERA -->
   <div class="modal" id="cameraModal">
     <div class="modal-card">
       <div class="modal-head">
@@ -1393,7 +1381,6 @@
     </div>
   </div>
 
-  <!-- CALL -->
   <div class="modal" id="callModal">
     <div class="modal-card">
       <div class="modal-head">
@@ -2083,9 +2070,33 @@
       const s = getSettings();
       if(s.sound !== "on") return;
 
-      const audio = $("loadingAudio");
-      audio.volume = .45;
-      audio.play().catch(() => {});
+      try{
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+
+        const notes = [523.25, 659.25, 783.99];
+
+        notes.forEach((freq, index) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = "sine";
+          osc.frequency.value = freq;
+
+          const start = ctx.currentTime + index * 0.13;
+          const end = start + 0.35;
+
+          gain.gain.setValueAtTime(0, start);
+          gain.gain.linearRampToValueAtTime(0.18, start + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, end);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(start);
+          osc.stop(end);
+        });
+      }catch(e){}
     }
 
     function hideLoader(){
